@@ -1,5 +1,9 @@
 # Build stage.
-FROM kitware/trame:py3.10-glvnd-2025-05
+ARG BASE_IMAGE=kitware/trame:py3.10-glvnd-2025-05
+FROM ${BASE_IMAGE}
+
+# Define arguments.
+ARG PYTHON_VERSION=3.10.18
 
 # Set environment variables.
 ENV TZ=Asia/Shanghai
@@ -8,13 +12,17 @@ ENV TZ=Asia/Shanghai
 WORKDIR /workspace/
 
 # Copy project files and folders to the current working directory (i.e. `workspace` folder).
-COPY ./workers/. ./workers
+COPY --chown=trame-user:trame-user ./ ./
 
-# Install project dependencies.
+# Build shared python.
 RUN echo 'START.' \
-  && cp /workspace/workers/sources.tuna.list /etc/apt/sources.list \
-  && apt update && apt install --yes vim git wget && apt clean \
-  && bash /workspace/workers/build-shared-python.sh \
+  && bash /workspace/workers/build-shared-python.sh "${PYTHON_VERSION}" \
+  && echo 'END.'
+ENV PATH="/workspace/runtime/Python-${PYTHON_VERSION}/MyPython/bin:${PATH}" \
+  LD_LIBRARY_PATH="/workspace/runtime/Python-${PYTHON_VERSION}:${LD_LIBRARY_PATH}"
+
+# Build trame slicer.
+RUN echo 'START.' \
   && bash /workspace/workers/build-trame-slicer.sh \
   && echo 'END.'
 

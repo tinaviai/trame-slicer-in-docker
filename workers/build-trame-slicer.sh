@@ -8,7 +8,7 @@ cd /workspace/
 git clone --depth=1 https://github.com/KitwareMedical/trame-slicer.git
 cd ./trame-slicer/
 
-/workspace/Python-3.10.18/python -m venv ./.venv/
+python -m venv ./.venv/
 source ./.venv/bin/activate
 
 pip install \
