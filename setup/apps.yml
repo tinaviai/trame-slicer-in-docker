@@ -1,0 +1,23 @@
+trame:
+  cmd:
+    - python
+    - /workspace/apps/trame-slicer/examples/medical_viewer_app.py
+    - --host
+    - ${host}
+    - --port
+    - ${port}
+    - --authKey
+    - ${secret}
+    - --server
+
+demo:
+  cmd:
+    - python
+    - /workspace/apps/demo/main.py
+    - --host
+    - ${host}
+    - --port
+    - ${port}
+    - --authKey
+    - ${secret}
+    - --server

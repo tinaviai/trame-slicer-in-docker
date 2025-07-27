@@ -6,7 +6,8 @@ FROM ${BASE_IMAGE}
 ARG PYTHON_VERSION=3.10.18
 
 # Set environment variables.
-ENV TZ=Asia/Shanghai
+ENV TZ=Asia/Shanghai \
+  PYTHONUNBUFFERED=1
 
 # Make the `workspace` folder the current working directory.
 WORKDIR /workspace/
@@ -22,15 +23,13 @@ ENV PATH="/workspace/runtime/Python-${PYTHON_VERSION}/MyPython/bin:${PATH}" \
   LD_LIBRARY_PATH="/workspace/runtime/Python-${PYTHON_VERSION}:${LD_LIBRARY_PATH}"
 
 # Build trame slicer.
+ENV TRAME_CLIENT_TYPE=vue3
 RUN echo 'START.' \
   && bash /workspace/workers/build-trame-slicer.sh \
   && echo 'END.'
 
 # The container listens on the specified network ports at runtime.
-EXPOSE 8888
+EXPOSE 80
 
 # Run entrypoint in foreground.
-ENTRYPOINT ["/workspace/trame-slicer/.venv/bin/python", "/workspace/trame-slicer/examples/medical_viewer_app.py"]
-
-# Provide defaults for entrypoint.
-CMD ["--host", "0.0.0.0", "--port", "8888", "--server"]
+ENTRYPOINT ["/opt/trame/entrypoint.sh"]

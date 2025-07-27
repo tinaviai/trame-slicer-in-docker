@@ -7,21 +7,21 @@ if [[ -n "${1}" ]]; then
   if [[ "${1}" =~ ^3(\.[0-9]+){2}$ ]]; then
     PYTHON_VERSION="${1}"
   else
-    echo "ERROR: Input argument PYTHON_VERSION is invalid."
+    echo "ERROR: Input argument PYTHON_VERSION is invalid." >&2
     exit 1
   fi
 else
-  echo "ERROR: Input argument PYTHON_VERSION is missing."
+  echo "ERROR: Input argument PYTHON_VERSION is missing." >&2
   exit 1
 fi
 
 function set_apt-mirrors() {
-  cp /workspace/runtime/sources.aliyun.list /etc/apt/sources.list
+  cp /workspace/runtime/apt/sources.aliyun.list /etc/apt/sources.list
 }
 
 function install_apt-dependencies() {
   apt update
-  apt install --yes wget git
+  apt install --yes wget
   apt clean
 }
 
@@ -58,6 +58,10 @@ function build_my-shared-python() {
   mv "/usr/bin/python${XY}" "/usr/bin/python${XY}-src" || echo "SKIP."
   update-alternatives --install "/usr/bin/python3"     "python3"     "${PWD}/MyPython/bin/python${XY}" 2
   update-alternatives --install "/usr/bin/python${XY}" "python${XY}" "${PWD}/MyPython/bin/python${XY}" 2
+
+  # TODO: Not work in docker?
+  # echo "PATH=\"${PWD}/MyPython/bin:${PATH}\"" > /etc/environment
+  # echo "LD_LIBRARY_PATH=\"${PWD}:${LD_LIBRARY_PATH}\"" >> /etc/environment
 }
 
 set_apt-mirrors

@@ -11,11 +11,11 @@
 2. Run container
 
     ```bash
-    docker container run --publish=8888:8888 --rm trame-slicer-in-docker
+    docker container run --publish=8080:80 --rm trame-slicer-in-docker
     ```
 
 3. Open browser
 
     ```bash
-    google-chrome http://localhost:8888
+    google-chrome http://localhost:8080
     ```
